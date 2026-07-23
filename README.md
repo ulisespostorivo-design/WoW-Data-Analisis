@@ -1,28 +1,61 @@
-# 📊 Sistema de Análisis de Economía y Profesiones
+# 📊 Proyecto de análisis de datos aplicado a la economía de World of Warcraft.
 
-Este proyecto demuestra mis habilidades técnicas en el ciclo completo de análisis de datos: desde la preparación de la información hasta la visualización estratégica.
+Proyecto de análisis de datos desarrollado sobre la economía de un videojuego (World of Warcraft), utilizado para registrar, transformar y visualizar datos económicos y de inventario con el objetivo de apoyar la toma de decisiones.
 
-## 📂 Estructura del Proyecto
+Integra Excel, PostgreSQL, Python y Power BI mediante un pipeline ETL que permite:
 
-*   **`Data/`**: Contiene los datasets utilizados.
-*   **`SQL/`**: Scripts de consulta y extracción de información.
-*   **`Reports/`**: Dashboard interactivo con los KPIs clave.
+- controlar inventarios
+- analizar precios históricos
+- monitorear población activa
+- calcular existencias automáticamente
+- evaluar rentabilidad de profesiones
+- apoyar decisiones estratégicas mediante indicadores
 
 ## 🛠️ Tecnologías utilizadas
 *   **Excel**: Limpieza y preparación de datos.
-*   **SQL**: Consultas para extracción y análisis.
+*   **PostgreSQL**: Consultas para extracción y análisis.
 *   **Power BI**: Visualización de datos y reportes ejecutivos.
 
+**Herramientas complementarias**
+
+* Scripts de **Python** para automatización de tareas operativas (desarrollados en colaboración).
+
 ---
-## 🎯 ¿Qué es este proyecto?
+## 🏗️ Arquitectura del proyecto
 
-Es un sistema diseñado y utilizado en un entorno operativo real junto a compañeros para registrar y analizar datos en el videojuego World of Warcraft. Abarca el control de inventarios, la recolección de objetos, el monitoreo de la población activa por horario y las fluctuaciones del mercado. Su propósito principal es facilitar la toma de decisiones estratégicas basadas en métricas reales para optimizar ganancias al comprar o vender, y determinar los momentos óptimos de recolección con menor competencia.
+El sistema fue diseñado para registrar, transformar y analizar información económica generada durante la actividad diaria de un grupo de jugadores de World of Warcraft. Centraliza datos de inventario, recolección de materiales, población activa y precios de mercado para generar indicadores que facilitan la toma de decisiones, como la gestión del inventario, la rentabilidad de las profesiones y la identificación de los momentos óptimos para comprar, vender o recolectar recursos. El sistema fue evolucionando a medida que aparecían nuevas necesidades operativas, incorporando procesos de automatización, limpieza de datos y visualización para reducir tareas manuales y mejorar la calidad de la información.
 
-## ⚙️ Arquitectura y Tecnologías Utilizadas (Pipeline ETL)
+## ⚙️ Arquitectura técnica
 
-* **Microsoft Excel:** Utilizado como interfaz inicial para la carga manual y el diseño estructural. Se estructuraron 23 tablas relacionales separadas en diccionarios de control (D_) para datos estáticos y registros de movimientos (R_) para asegurar la escalabilidad. Se complementó con scripts externos de Python para la exportación masiva a CSV y la extracción de datos de la casa de subastas, ahorrando horas de tipeo manual.
-* **PostgreSQL:** Motor de base de datos relacional encargado de la persistencia segura, los respaldos automáticos y la integridad referencial. Se implementó lógica de transformación mediante la creación de vistas (views) con filtros avanzados (WHERE, NOT IN) para limpiar registros fantasma, corregir errores tipográficos y precalcular información.
-* **Power BI:** Tableros interactivos conectados a la base de datos para auditar existencias en tiempo real (Entradas - Salidas + Fabricados). Incluye gráficos de población, evolución histórica de precios de mercado con máximos, mínimos y promedios mediante listas desplegables, y un módulo analítico de rendimiento y probabilidades de prospección de minerales con indicadores de tamaño de muestreo estadístico.
+* **Microsoft Excel:** Diseñado como punto de entrada del sistema para la carga de datos y el modelado inicial de la información. Se estructuraron 23 tablas relacionales separadas en diccionarios de control (D_) para datos estáticos y registros de movimientos (R_) para asegurar la escalabilidad. Se integró con scripts de Python desarrollados en colaboración para automatizar la exportación masiva a CSV y la extracción de datos de la casa de subastas, reduciendo significativamente el trabajo manual.
+  
+* **PostgreSQL:** Se utilizó como núcleo del sistema para almacenar, transformar y validar la información. La lógica de negocio se implementó mediante vistas (views) que realizan limpieza de registros, corrección de inconsistencias, aplicación de filtros (WHERE, NOT IN) y precálculo de métricas antes de su consumo desde Power BI.
+  
+* **Power BI:** Se desarrollaron tableros interactivos para el seguimiento del inventario, auditoría automática de existencias (Entradas − Salidas + Fabricados), análisis histórico de precios mediante filtros dinámicos y evaluación estadística del rendimiento de profesiones, incluyendo probabilidades de prospección y tamaño de muestra.
+  
+* **Pipeline ETL:** Flujo general de los datos
+```text
+Excel
+│
+├── Registro manual
+├── Organización
+└── Exportación
+        │
+        ▼
+PostgreSQL
+│
+├── Views
+├── Transformaciones
+├── Limpieza
+└── Integridad
+        │
+        ▼
+Power BI
+│
+├── Dashboards
+├── KPIs
+└── Análisis
+```
 
 ## 🛠️ Desafíos Técnicos y Resolución de Problemas
 

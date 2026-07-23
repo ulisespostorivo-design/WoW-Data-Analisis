@@ -32,8 +32,6 @@ Es un sistema diseñado y utilizado en un entorno operativo real junto a compañ
 
 Hay más de 150 combinaciones de gemas posibles, pero yo no iba a ponerme a anotar cada una con un ID único que después me costara buscar. Así que armé una tabla de atributos reduciéndola a 26 ID únicos, ordenados desde las estadísticas más usadas hasta las menos frecuentes.
 
-![Tabla de atributos de gemas](Imagenes/atributos-gemas.png)
-
 ¿Cómo funciona? Supongamos una gema que tiene poder de ataque e índice de celeridad: busco rápido y veo el 7 (poder de ataque) y el 9 (celeridad), y listo, la anoto sin dar vueltas. Si es una gema pura, por ejemplo solo poder de hechizo, le pongo 6 que sería su ID más un 0 que indica que no lleva segundo atributo, marcando así su pureza.
  
 ### 📊 Mi lucha con Power BI

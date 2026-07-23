@@ -59,30 +59,48 @@ Power BI
 
 ## 🛠️ Desafíos Técnicos y Resolución de Problemas
 
-### 💎 El problema de las gemas
+### 💎 Optimización del sistema de identificación de gemas
 
-Hay más de 150 combinaciones de gemas posibles, pero yo no iba a ponerme a anotar cada una con un ID único que después me costara buscar. Así que armé una tabla de atributos reduciéndola a 26 ID únicos, ordenados desde las estadísticas más usadas hasta las menos frecuentes.
+El juego cuenta con más de 150 combinaciones posibles de gemas. Asignar un identificador único a cada combinación aumentaba innecesariamente la complejidad del registro y dificultaba la carga de información.
 
-¿Cómo funciona? Supongamos una gema que tiene poder de ataque e índice de celeridad: busco rápido y veo el 7 (poder de ataque) y el 9 (celeridad), y listo, la anoto sin dar vueltas. Si es una gema pura, por ejemplo solo poder de hechizo, le pongo 6 que sería su ID más un 0 que indica que no lleva segundo atributo, marcando así su pureza.
+Para resolver este problema diseñé un sistema de codificación basado en atributos. En lugar de identificar cada gema completa, cada atributo recibió un identificador único, reduciendo el modelo a solo 26 códigos base. Este enfoque simplificó el registro manual, redujo la cantidad de identificadores necesarios y facilitó la búsqueda y mantenimiento de la información.
+
+Las gemas compuestas se representan combinando los identificadores de sus atributos. Por ejemplo, una gema con Poder de Ataque (7) e Índice de Celeridad (9) se registra como 7 y 9. Las gemas de un único atributo utilizan el identificador seguido de un 0, permitiendo distinguirlas de forma consistente (por ejemplo, 6 y 0 para Poder con Hechizos puro).
  
-### 📊 Mi lucha con Power BI
+### 📊 Depuración del modelo de datos
 
-Esto me causó demasiados problemas que me trabaron durante días. Lo primero que me pasó fue un problema de objetos fantasmas: al cargar los datos vi que uno de ellos, "muestra de joyero", tenía un número muy inusual que no tenía sentido que estuviera ahí. Al verlo intenté arreglarlo porque si ese fallaba, todos los demás también estarían mal. Después de días lidiando con esto, volví a SQL y aprendí a usar una herramienta que hasta entonces no sabía, que eran las views. Ahí hago todo el cálculo en SQL para pasarlo masticado a Power BI, solucionándome el problema de los registros fantasmas.
+Uno de los mayores desafíos del proyecto apareció cuando empecé a trabajar con Power BI. Al cargar los primeros datos noté que un objeto llamado "Muestra de joyero" tenía un valor completamente fuera de lugar. Al principio pensé que era un error aislado, pero cuanto más revisaba el inventario más claro quedaba que el problema afectaba a todos los cálculos derivados de ese registro.
 
-Luego tuve problemas para filtrar resultados específicos y evitar que ensuciaran el inventario, como los prismas helados, que se crean y se consumen el mismo día. Para no llenar espacios innecesarios deseaba eliminarlos, así que, al no encontrar otra solución, los filtré con un WHERE desde la propia view para que no le llegara ese ID específico.
+Durante varios intentos busqué solucionarlo desde Power BI, pero no lograba una solución que realmente corrigiera el origen del problema. Eso me llevó a volver sobre la base de datos y aprender a utilizar views en PostgreSQL. En lugar de hacer las transformaciones dentro de Power BI, empecé a preparar los datos desde SQL, limpiando registros inconsistentes, aplicando filtros y dejando toda la información lista antes de visualizarla. Ese cambio terminó simplificando el modelo y eliminando los registros fantasma.
 
-Por último, cuando cargué la primera gran actualización de SQL y fui a refrescar Power BI para que tuviera los datos nuevos, colapsó en su totalidad. Analizando los errores durante un buen rato descubrí que una tabla en específico creaba todos los problemas con su relación. ¿La solución? Aislarla temporalmente; se logró cargar todo y volvió una vez que sus tablas hermanas estuvieron sanas.
+Otro caso interesante apareció con los Prismas Helados. Son objetos que se crean y consumen el mismo día, por lo que realmente nunca forman parte del inventario disponible. Sin embargo, seguían apareciendo en los reportes y ocupaban espacio con información que no aportaba valor. Después de probar distintas alternativas decidí excluirlos directamente desde las views mediante un WHERE, evitando que llegaran al modelo analítico.
 
-### 🐍 Automatización con Python
+El tercer problema apareció cuando hice la primera actualización grande de la base de datos. Al refrescar Power BI esperaba que simplemente incorporara las tablas nuevas, pero el modelo dejó de cargar por completo. Revisando las relaciones descubrí que una tabla estaba generando un conflicto con el resto del modelo. La solución fue aislarla temporalmente, permitir que el resto de las tablas cargaran correctamente y volver a incorporarla una vez que sus dependencias estuvieron resueltas.
 
-Para mí esto fue un antes y después. Tenía varios problemas que me costaban horrores: desde cargar los datos de la subasta hasta pasarlos a SQL con CSV, o hacer los backups.
+### 🐍 Automatización del flujo de trabajo
+
+Hubo un momento en el que el problema ya no era la base de datos ni Power BI, sino todo el trabajo manual que había alrededor. Cada actualización llevaba demasiado tiempo y, cuanto más crecía el proyecto, más evidente era que necesitaba automatizar varias tareas repetitivas.
 
 #### ⚠️ Los problemas iniciales
 
-Empecemos por lo primero: soy un desconfiado y me aterra perder todo mi esfuerzo, así que hacía los backups de mi SQL a mano. Además, la primera vez que cargué los datos me agoté mentalmente porque tenía que extraer cada tabla del Excel por separado y pasarla a CSV para poder subirla a SQL, haciendo que los datos quedaran desactualizados un buen tiempo solo por el trabajo operativo que había detrás. Y por último, el valor de mercado: antes registraba 6 objetos y estaba 30 minutos frente a la pantalla con el Excel en mano anotando todo.
+El primer problema eran los backups. Siempre tuve bastante cuidado con la información del proyecto y hacía las copias de seguridad de PostgreSQL manualmente. Funcionaba, pero era un proceso repetitivo que dependía de acordarme de hacerlo cada vez.
 
-#### ⚙️ La implementación de scripts
+La carga de datos tampoco ayudaba. La primera vez que migré la información desde Excel a PostgreSQL tuve que exportar cada tabla por separado a CSV antes de importarla. Era un trabajo muy mecánico y hacía que los datos permanecieran desactualizados durante bastante tiempo simplemente por todo el proceso que había que seguir.
 
-Así que fui a pedirle ayuda a un amigo sobre todo esto y me programó 3 scripts de Python. El de backups y el de CSV son de esos que hacés doble clic y te lo hacen al instante, pero el de la subasta fue una revolución industrial: era incluso ampliable, y llegué a analizar 30 ítems tres veces al día con simplemente dos clics.
+El último cuello de botella era el mercado. Al principio registraba apenas seis objetos y tardaba cerca de treinta minutos en anotar manualmente los precios. Con el tiempo quedó claro que ese método no iba a escalar si quería analizar más información.
 
-Como intercambio, le armé la misma base de datos para la evolución del precio de mercado y le preparé un Power BI. Yo le había pedido que mis registros de subasta pasaran a un Excel separado porque me gusta revisar y analizar que esté todo en orden, aunque él me ofreció subirlos directamente a SQL. Decliné su oferta por preferencia personal, pero sé que esa opción está ahí por si en el futuro necesito manejar registros masivos.
+#### ⚙️ La solución
+
+Para resolver estos problemas trabajé junto a un amigo, que desarrolló tres scripts de Python mientras yo continuaba con la base de datos y los dashboards del proyecto.
+
+El primero automatizó la generación de backups de PostgreSQL. El segundo permitió exportar automáticamente todas las tablas de Excel a CSV, eliminando por completo una de las tareas más repetitivas del proyecto.
+
+El tercero fue el que más impacto tuvo. Automatizó la extracción de los precios de la casa de subastas, permitiéndome pasar de registrar manualmente seis objetos en aproximadamente treinta minutos a analizar alrededor de treinta ítems, tres veces por día, con apenas un par de clics.
+
+Como parte de esa colaboración desarrollé para él la misma base de datos destinada al análisis de precios históricos y un dashboard en Power BI. Aunque el script podía cargar los datos directamente en PostgreSQL, preferí que primero pasaran por un archivo de Excel para poder revisarlos antes de incorporarlos al sistema. Esa decisión priorizó el control de calidad de los datos, aunque el proyecto quedó preparado para automatizar completamente ese paso si fuera necesario en el futuro.
+
+## 📌 Conclusiones
+
+Este proyecto comenzó como una herramienta para organizar información y terminó convirtiéndose en un sistema de análisis de datos con un pipeline ETL, una base de datos relacional y dashboards interactivos.
+
+Durante su desarrollo aprendí a modelar datos, diseñar bases de datos relacionales, implementar procesos de transformación en PostgreSQL, construir visualizaciones en Power BI y mejorar el flujo de trabajo mediante automatización y resolución de problemas reales.

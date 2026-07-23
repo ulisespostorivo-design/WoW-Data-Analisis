@@ -1,4 +1,4 @@
-# Portafolio: Análisis de Datos Comerciales
+# 📊 Sistema de Análisis de Economía y Profesiones
 
 Este proyecto demuestra mis habilidades técnicas en el ciclo completo de análisis de datos: desde la preparación de la información hasta la visualización estratégica.
 
@@ -14,8 +14,6 @@ Este proyecto demuestra mis habilidades técnicas en el ciclo completo de análi
 *   **Power BI**: Visualización de datos y reportes ejecutivos.
 
 ---
-# 📊 Sistema de Análisis de Economía y Profesiones
-
 ## 🎯 ¿Qué es este proyecto?
 
 Es un sistema diseñado y utilizado en un entorno operativo real junto a compañeros para registrar y analizar datos en el videojuego World of Warcraft. Abarca el control de inventarios, la recolección de objetos, el monitoreo de la población activa por horario y las fluctuaciones del mercado. Su propósito principal es facilitar la toma de decisiones estratégicas basadas en métricas reales para optimizar ganancias al comprar o vender, y determinar los momentos óptimos de recolección con menor competencia.

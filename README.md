@@ -1,4 +1,4 @@
-# 📊 Proyecto de análisis de datos aplicado a la economía de World of Warcraft.
+# 📊 Sistema de análisis económico e inventario
 
 Proyecto de análisis de datos desarrollado sobre la economía de un videojuego (World of Warcraft), utilizado para registrar, transformar y visualizar datos económicos y de inventario con el objetivo de apoyar la toma de decisiones.
 
